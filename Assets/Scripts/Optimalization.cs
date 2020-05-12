@@ -60,7 +60,48 @@ namespace DefaultNamespace
 				triangleIndexes.Add(hit.triangleIndex);
 			}
 		}
-		
+
+		private static Mesh CreateNewMesh(MeshCollider collider, HashSet<int> usedTriangles)
+		{
+			var sharedMesh = collider.sharedMesh;
+			var sharedMeshVertices = sharedMesh.vertices;
+			var sharedMeshVertexCount = sharedMesh.vertexCount;
+
+			var usedVertices = new HashSet<int>();
+			foreach (int triangleIndex in usedTriangles)
+			{
+				usedVertices.Add(triangleIndex * 3 + 0);
+				usedVertices.Add(triangleIndex * 3 + 1);
+				usedVertices.Add(triangleIndex * 3 + 2);
+			}
+
+			var usedVerticesSorted = new List<int>(usedVertices);
+			usedVerticesSorted.Sort();
+				
+			var newVertices = new List<Vector3>();
+			var verticesMapping = new Dictionary<int, int>();
+			for (int i = 0; i < usedVerticesSorted.Count; i++)
+			{
+				int index = usedVerticesSorted[i];
+				newVertices.Add(sharedMeshVertices[index]);
+				verticesMapping.Add(index, i);
+			}
+
+			var newTriangles = new List<int>();
+			foreach (int triangleIndex in usedTriangles)
+			{
+				var newIndex = verticesMapping[triangleIndex];
+				newTriangles.Add(newIndex * 3 + 0);
+				newTriangles.Add(newIndex * 3 + 1);
+				newTriangles.Add(newIndex * 3 + 2);
+			}
+
+			Mesh mesh = CopyMesh(collider.sharedMesh);
+			mesh.vertices = newVertices.ToArray();
+			mesh.triangles = newTriangles.ToArray();
+			return mesh;
+		}
+
 		private static void ReplaceMeshes(IDictionary<MeshCollider, HashSet<int>> hitTriangles)
 		{
 			if (!hitTriangles.Values.Any())
@@ -74,19 +115,8 @@ namespace DefaultNamespace
 			foreach (KeyValuePair<MeshCollider, HashSet<int>> kvp in hitTriangles)
 			{
 				MeshCollider meshCollider = kvp.Key;
-//			Instantiate(meshCollider.gameObject).SetActive(false);
 				Mesh oldMesh = meshCollider.sharedMesh;
-				Mesh mesh = CopyMesh(oldMesh);
-				int[] oldTriangles = mesh.triangles;
-				var newTriangles = new List<int>();
-				foreach (int triangleIndex in kvp.Value)
-				{
-					newTriangles.Add(oldTriangles[triangleIndex * 3 + 0]);
-					newTriangles.Add(oldTriangles[triangleIndex * 3 + 1]);
-					newTriangles.Add(oldTriangles[triangleIndex * 3 + 2]);
-				}
-
-				mesh.triangles = newTriangles.ToArray();
+				Mesh mesh = CreateNewMesh(meshCollider, kvp.Value);
 				meshCollider.sharedMesh = mesh;
 
 				var meshFilter = meshCollider.transform.GetComponent<MeshFilter>();
