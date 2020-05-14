@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -65,40 +66,54 @@ namespace DefaultNamespace
 		{
 			var sharedMesh = collider.sharedMesh;
 			var sharedMeshVertices = sharedMesh.vertices;
+			int[] sharedMeshTriangles = sharedMesh.triangles;
+			Vector3[] sharedMeshNormals = sharedMesh.normals;
 			var sharedMeshVertexCount = sharedMesh.vertexCount;
 
-			var usedVertices = new HashSet<int>();
+			//Debug.Log("sharedMeshVertices:" + sharedMeshVertices.ToStringExt());
+			//Debug.Log("sharedMeshTriangles:" + sharedMeshTriangles.ToStringExt());
+			//Debug.Log("usedTriangles:" + usedTriangles.ToStringExt());
+			
+			var usedVertices = new List<int>();
 			foreach (int triangleIndex in usedTriangles)
 			{
-				usedVertices.Add(triangleIndex * 3 + 0);
-				usedVertices.Add(triangleIndex * 3 + 1);
-				usedVertices.Add(triangleIndex * 3 + 2);
+				usedVertices.Add(sharedMeshTriangles[triangleIndex * 3 + 0]);
+				usedVertices.Add(sharedMeshTriangles[triangleIndex * 3 + 1]);
+				usedVertices.Add(sharedMeshTriangles[triangleIndex * 3 + 2]);
 			}
+			//Debug.Log("usedVertices:" + usedVertices.ToStringExt());
 
-			var usedVerticesSorted = new List<int>(usedVertices);
+			var usedVerticesSorted = new HashSet<int>(usedVertices).ToList();
 			usedVerticesSorted.Sort();
-				
+			//Debug.Log("usedVerticesSorted:" + usedVerticesSorted.ToStringExt());
+	
+			
 			var newVertices = new List<Vector3>();
+			var newNormals = new List<Vector3>();
 			var verticesMapping = new Dictionary<int, int>();
 			for (int i = 0; i < usedVerticesSorted.Count; i++)
 			{
 				int index = usedVerticesSorted[i];
 				newVertices.Add(sharedMeshVertices[index]);
+				newNormals.Add(sharedMeshNormals[index]);
 				verticesMapping.Add(index, i);
 			}
+			//Debug.Log("newVertices:" + newVertices.ToStringExt());
 
 			var newTriangles = new List<int>();
 			foreach (int triangleIndex in usedTriangles)
 			{
-				var newIndex = verticesMapping[triangleIndex];
-				newTriangles.Add(newIndex * 3 + 0);
-				newTriangles.Add(newIndex * 3 + 1);
-				newTriangles.Add(newIndex * 3 + 2);
+				
+				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 0]]);
+				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 1]]);
+				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 2]]);
 			}
 
+			
 			Mesh mesh = CopyMesh(collider.sharedMesh);
-			mesh.vertices = newVertices.ToArray();
 			mesh.triangles = newTriangles.ToArray();
+			mesh.vertices = newVertices.ToArray();
+			mesh.normals = newNormals.ToArray();
 			return mesh;
 		}
 
