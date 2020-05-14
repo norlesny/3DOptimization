@@ -68,12 +68,15 @@ namespace DefaultNamespace
 			var sharedMeshVertices = sharedMesh.vertices;
 			int[] sharedMeshTriangles = sharedMesh.triangles;
 			Vector3[] sharedMeshNormals = sharedMesh.normals;
+			Vector2[] sharedMeshUv = sharedMesh.uv;
+			Vector2[] sharedMeshUv2 = sharedMesh.uv2;
+			Vector4[] sharedMeshTangents = sharedMesh.tangents;
 			var sharedMeshVertexCount = sharedMesh.vertexCount;
 
 			//Debug.Log("sharedMeshVertices:" + sharedMeshVertices.ToStringExt());
 			//Debug.Log("sharedMeshTriangles:" + sharedMeshTriangles.ToStringExt());
 			//Debug.Log("usedTriangles:" + usedTriangles.ToStringExt());
-			
+
 			var usedVertices = new List<int>();
 			foreach (int triangleIndex in usedTriangles)
 			{
@@ -86,16 +89,22 @@ namespace DefaultNamespace
 			var usedVerticesSorted = new HashSet<int>(usedVertices).ToList();
 			usedVerticesSorted.Sort();
 			//Debug.Log("usedVerticesSorted:" + usedVerticesSorted.ToStringExt());
-	
-			
+
+
 			var newVertices = new List<Vector3>();
 			var newNormals = new List<Vector3>();
+			var newUv = new List<Vector2>();
+			var newUv2 = new List<Vector2>();
+			var newTangents = new List<Vector4>();
 			var verticesMapping = new Dictionary<int, int>();
 			for (int i = 0; i < usedVerticesSorted.Count; i++)
 			{
 				int index = usedVerticesSorted[i];
 				newVertices.Add(sharedMeshVertices[index]);
 				newNormals.Add(sharedMeshNormals[index]);
+				newUv.Add(sharedMeshUv[index]);
+				newUv2.Add(sharedMeshUv2[index]);
+				newTangents.Add(sharedMeshTangents[index]);
 				verticesMapping.Add(index, i);
 			}
 			//Debug.Log("newVertices:" + newVertices.ToStringExt());
@@ -103,17 +112,19 @@ namespace DefaultNamespace
 			var newTriangles = new List<int>();
 			foreach (int triangleIndex in usedTriangles)
 			{
-				
 				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 0]]);
 				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 1]]);
 				newTriangles.Add(verticesMapping[sharedMeshTriangles[triangleIndex * 3 + 2]]);
 			}
 
-			
+
 			Mesh mesh = CopyMesh(collider.sharedMesh);
 			mesh.triangles = newTriangles.ToArray();
 			mesh.vertices = newVertices.ToArray();
 			mesh.normals = newNormals.ToArray();
+			mesh.uv = newUv.ToArray();
+			mesh.uv2 = newUv2.ToArray();
+			mesh.tangents = newTangents.ToArray();
 			return mesh;
 		}
 
@@ -125,7 +136,10 @@ namespace DefaultNamespace
 				return;
 			}
 
-			List<MeshCollider> allMeshColliders = GameObject.FindObjectsOfType<MeshCollider>().ToList();
+			List<MeshCollider> allMeshColliders = Object.FindObjectsOfType<MeshCollider>().ToList();
+			Debug.Log($"Vertex count before: {allMeshColliders.Sum(collider => collider.sharedMesh.vertexCount)}");
+			Debug.Log(
+				$"Triangles count before: {allMeshColliders.Sum(collider => collider.sharedMesh.triangles.Length / 3)}");
 
 			foreach (KeyValuePair<MeshCollider, HashSet<int>> kvp in hitTriangles)
 			{
@@ -147,6 +161,15 @@ namespace DefaultNamespace
 			{
 				meshCollider.gameObject.SetActive(false);
 			}
+
+
+			CoroutinePool.RunDelayed(() =>
+			{
+				List<MeshCollider> meshColliders = Object.FindObjectsOfType<MeshCollider>().ToList();
+				Debug.Log($"Vertex count after: {meshColliders.Sum(collider => collider.sharedMesh.vertexCount)}");
+				Debug.Log(
+					$"Triangles count after: {meshColliders.Sum(collider => collider.sharedMesh.triangles.Length / 3)}");
+			});
 		}
 
 		private static Mesh CopyMesh(Mesh toCopy)
