@@ -1,23 +1,54 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-	public class FirstPersonViewCamerasProvider : MonoBehaviour
+	public class FirstPersonViewCamerasProvider : MonoBehaviour, IEnumerable<Vector3>
 	{
-		private int numberOfCasts = 4;
+		[SerializeField] private Camera targetCamera;
+		[SerializeField] private int rollCasts = 4;
+		[SerializeField] private int yawCasts = 4;
+
+		private IEnumerator<Vector3> enumerator;
 
 		private void OnDrawGizmos()
 		{
 			var startPoint = transform.position;
-			var endPoint = startPoint + transform.forward.normalized;
-			float rotationAngle = 360f / numberOfCasts;
-			float rotation = 0f;
-			Vector3 transformUp = transform.up;
-			for (int i = 0; i < numberOfCasts; i++)
+			foreach (Vector3 d in this)
 			{
-				endPoint = Quaternion.AngleAxis(rotationAngle, transformUp) * endPoint;
-				Gizmos.DrawLine(startPoint, endPoint);				
+				Gizmos.DrawLine(startPoint, startPoint + d);
 			}
+		}
+
+		[ContextMenu("test")]
+		private void test()
+		{
+			foreach (var v in this)
+			{
+				Debug.Log(v);
+			}
+		}
+
+		public IEnumerator<Vector3> GetEnumerator()
+		{
+			var forward = transform.forward.normalized;
+			var up = transform.up.normalized;
+			float rollDelta = 180f / rollCasts;
+			float yawDelta = 360f / yawCasts;
+			for (int j = 0; j < rollCasts; j++)
+			{
+				for (int i = 0; i < yawCasts; i++)
+				{
+					yield return Quaternion.AngleAxis(rollDelta * j, forward) *
+						(Quaternion.AngleAxis(yawDelta * i, up) * forward);
+				}
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
