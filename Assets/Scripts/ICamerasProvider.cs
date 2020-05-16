@@ -1,9 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-	public interface ICamerasProvider
-	{
-		Camera[] Cameras { get; }
-	}
+	public interface ICamerasProvider : IEnumerable<Camera>
+	{ }
 }

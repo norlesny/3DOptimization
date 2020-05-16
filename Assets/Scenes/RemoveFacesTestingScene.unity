@@ -44906,7 +44906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    camerasProvider: {fileID: 0}
+    camerasProvider: {fileID: 1126527477}
     horizontalRaycastDensity: 1000
     verticalRaycastDensity: 1000
 --- !u!4 &959460759
@@ -51379,7 +51379,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1126527476
 Transform:
   m_ObjectHideFlags: 0
@@ -52035,8 +52035,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f3c17a1590438c81d785d3f30b6e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetCamera: {fileID: 1509574791}
   rollCasts: 1
   yawCasts: 5
+  drawRays: 0
 --- !u!1 &1147842636
 GameObject:
   m_ObjectHideFlags: 0
@@ -68325,7 +68327,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1509574787}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -87326,7 +87328,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1905524439
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -8,7 +9,7 @@ namespace DefaultNamespace
 	{
 		[SerializeField] private InspectorCamerasProvider camerasProvider;
 
-		public Camera[] Cameras => camerasProvider != null ? camerasProvider.Cameras : null;
+		public IEnumerable<Camera> Cameras => camerasProvider;
 		public int horizontalRaycastDensity;
 		public int verticalRaycastDensity;
 	}

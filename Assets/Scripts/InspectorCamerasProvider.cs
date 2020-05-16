@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -6,6 +8,14 @@ namespace DefaultNamespace
 	{
 		[SerializeField] private Camera[] cameras;
 
-		public Camera[] Cameras => cameras;
+		public IEnumerator<Camera> GetEnumerator()
+		{
+			return ((IEnumerable<Camera>) cameras).GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 	}
 }
