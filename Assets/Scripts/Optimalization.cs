@@ -157,6 +157,7 @@ namespace DefaultNamespace
 				allMeshColliders.Remove(meshCollider);
 			}
 
+			Debug.Log($"MeshColliders that were not hit: {allMeshColliders.Count}");
 			foreach (MeshCollider meshCollider in allMeshColliders)
 			{
 				meshCollider.gameObject.SetActive(false);

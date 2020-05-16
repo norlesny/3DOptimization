@@ -1,14 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-	public class FirstPersonViewCamerasProvider : MonoBehaviour, IEnumerable<Camera>
+	public class FirstPersonViewCamerasProvider : CameraProviderBehaviour
 	{
 		[SerializeField] private Camera targetCamera;
-		[SerializeField] private int rollCasts = 4;
-		[SerializeField] private int yawCasts = 4;
+		[SerializeField] private int rollCasts = 3;
+
+		[SerializeField]
+		[Tooltip("Should be an odd value to prevent duplicate rotations (still one will be duplicated - forward)")]
+		private int yawCasts = 3;
+
 		[SerializeField] private bool drawRays;
 
 		private void OnDrawGizmos()
@@ -28,28 +31,25 @@ namespace DefaultNamespace
 			}
 		}
 
-		public IEnumerator<Camera> GetEnumerator()
+		public override IEnumerator<Camera> GetEnumerator()
 		{
-			var originForward = targetCamera.transform.forward;
-			var forward = targetCamera.transform.forward.normalized;
-			var up = targetCamera.transform.up.normalized;
+			var camera = targetCamera;
+			var cameraTransform = camera.transform;
+			var forward = cameraTransform.forward;
+			var up = cameraTransform.up;
 			float rollDelta = 180f / rollCasts;
 			float yawDelta = 360f / yawCasts;
 			for (int j = 0; j < rollCasts; j++)
 			{
 				for (int i = 0; i < yawCasts; i++)
 				{
-					targetCamera.transform.forward = Quaternion.AngleAxis(rollDelta * j, forward) *
+					cameraTransform.forward = Quaternion.AngleAxis(rollDelta * j, forward) *
 						(Quaternion.AngleAxis(yawDelta * i, up) * forward);
-					yield return targetCamera;
+					yield return camera;
 				}
 			}
-			targetCamera.transform.forward = originForward;
-		}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
+			cameraTransform.forward = forward;
 		}
 	}
 }
