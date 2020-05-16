@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace MyCamera
 {
 	public interface ICamerasProvider : IEnumerable<Camera>
 	{ }

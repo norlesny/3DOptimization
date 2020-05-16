@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace MyCamera.Providers
 {
 	public abstract class CameraProviderBehaviour : MonoBehaviour, ICamerasProvider
 	{

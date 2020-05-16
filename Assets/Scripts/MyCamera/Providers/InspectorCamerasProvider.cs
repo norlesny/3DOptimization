@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace MyCamera.Providers
 {
 	public class InspectorCamerasProvider : CameraProviderBehaviour
 	{

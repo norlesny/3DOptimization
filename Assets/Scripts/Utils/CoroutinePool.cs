@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace DefaultNamespace
+namespace Utils
 {
 	public class CoroutinePool
 	{

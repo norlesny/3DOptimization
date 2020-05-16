@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using MyCamera.Providers;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Optimization
 {
 	[Serializable]
-	public struct OptimalizationSettings
+	public struct OptimizationSettings
 	{
 		[SerializeField] private CameraProviderBehaviour camerasProvider;
 

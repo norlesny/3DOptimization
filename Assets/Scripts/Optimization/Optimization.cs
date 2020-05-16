@@ -1,19 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
-namespace DefaultNamespace
+namespace Optimization
 {
-	public static class Optimalization
+	public static class Optimization
 	{
-		public static void OptimizeView(OptimalizationSettings settings)
+		public static void OptimizeView(OptimizationSettings settings)
 		{
 			IDictionary<MeshCollider, HashSet<int>> hitTriangles = GetHitTriangles(settings);
 			ReplaceMeshes(hitTriangles);
 		}
 
-		private static IDictionary<MeshCollider, HashSet<int>> GetHitTriangles(OptimalizationSettings settings)
+		private static IDictionary<MeshCollider, HashSet<int>> GetHitTriangles(OptimizationSettings settings)
 		{
 			var hitTriangles = new Dictionary<MeshCollider, HashSet<int>>();
 			float horizontalStep = 1f / settings.horizontalRaycastDensity;

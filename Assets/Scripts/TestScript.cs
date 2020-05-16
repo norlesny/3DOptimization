@@ -1,12 +1,12 @@
-﻿using DefaultNamespace;
+﻿using Optimization;
 using UnityEngine;
 
 public class TestScript : MonoBehaviour
 {
-	[SerializeField] private OptimalizationSettings settings;
+	[SerializeField] private OptimizationSettings settings;
 
 	private void Start()
 	{
-		Optimalization.OptimizeView(settings);
+		Optimization.Optimization.OptimizeView(settings);
 	}
 }
