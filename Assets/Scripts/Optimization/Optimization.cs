@@ -166,6 +166,9 @@ namespace Optimization
 
 			CoroutinePool.RunDelayed(() =>
 			{
+				var meshFilters = Object.FindObjectsOfType<MeshFilter>().ToList();
+				Debug.Log($"Vertex count after: {meshFilters.Sum(filter => filter.mesh.vertexCount)}");
+				
 				List<MeshCollider> meshColliders = Object.FindObjectsOfType<MeshCollider>().ToList();
 				Debug.Log($"Vertex count after: {meshColliders.Sum(collider => collider.sharedMesh.vertexCount)}");
 				Debug.Log(

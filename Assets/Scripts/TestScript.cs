@@ -1,4 +1,5 @@
-﻿using Optimization;
+﻿using MyCamera.Providers;
+using Optimization;
 using UnityEngine;
 
 public class TestScript : MonoBehaviour
@@ -7,6 +8,11 @@ public class TestScript : MonoBehaviour
 
 	private void Start()
 	{
+		if (settings.camerasProvider == null)
+		{
+			settings.camerasProvider = FindObjectOfType<CameraProviderBehaviour>();
+		}
+		Debug.Log($"Launching with {settings.camerasProvider.name}", settings.camerasProvider);
 		Optimization.Optimization.OptimizeView(settings);
 	}
 }
